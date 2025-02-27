@@ -6,15 +6,7 @@ const connectDB = require('./database'); // Importer la fonction de connexion
 const app = express();
 const port = 5001;
 
-// Autoriser les requêtes depuis http://localhost:3000
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-// Middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

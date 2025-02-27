@@ -1,4 +1,4 @@
-const CategoryEnum = Object.freeze({
+const CategoryEnum = {
     BUSINESS: 'BUS',
     HEALTH: 'HLT',
     LIFESTYLE: 'LFS',
@@ -7,6 +7,7 @@ const CategoryEnum = Object.freeze({
     EDUCATION: 'EDU',
     FOOD: 'FOD',
     ART: 'ART'
-});
-
-module.exports = CategoryEnum;
+  };
+  
+  module.exports = CategoryEnum;
+  

@@ -1,21 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog'); 
+const CategoryEnum = require('../models/categoryEnum');
 
 // Ajouter un blog
 router.post('/add', async (req, res) => {
   try {
-      const { title, description, category, author, image } = req.body;  // Assurez-vous que ces champs sont dans la requête
+      console.log("Requête reçue avec le corps :", req.body); // Affiche le corps de la requête
+
+      const { title, description, category, author, image } = req.body;
+      
       if (!title || !description || !category || !author || !image) {
+          console.log("Erreur : Champs manquants"); // Affiche un message si un champ est manquant
           return res.status(400).json({ message: "Tous les champs sont requis" });
       }
+
+      // Vérification de la catégorie
+      if (!Object.values(CategoryEnum).includes(category)) {
+          console.log("Erreur : Catégorie invalide"); // Affiche un message si la catégorie est invalide
+          return res.status(400).json({ message: "Catégorie invalide" });
+      }
+
+      console.log("Création du nouveau blog avec les données :", { title, description, category, author, image });
+
       const newBlog = new Blog({ title, description, category, author, image });
+
+      // Sauvegarde dans la base de données
       await newBlog.save();
+
+      console.log("Blog créé avec succès :", newBlog);
       res.status(201).json(newBlog);
   } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la création du blog", error });
+      console.error("Erreur lors de la création du blog :", error); // Affiche toute l'erreur
+      // Vérifiez si l'erreur a une propriété "message" ou "stack"
+      const errorMessage = error.message || error.stack || JSON.stringify(error);
+      res.status(500).json({ message: "Erreur lors de la création du blog", error: errorMessage });
   }
 });
+
+
+
 
 // Récupérer tous les blogs
 router.get('/get-all', async (req, res) => {
