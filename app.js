@@ -1,43 +1,20 @@
 require('dotenv').config(); // Charger les variables d’environnement
 const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const port = process.env.PORT || 5001
-;
 const cors = require('cors');
 const connectDB = require('./database'); // Importer la fonction de connexion
 
+const app = express();
+const port = 5001;
+
+// Autoriser les requêtes depuis http://localhost:3000
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Middleware
-app.use(bodyParser.json());
-
-// Connexion à MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log("Connexion à MongoDB réussie"))
-.catch(err => console.error("Erreur de connexion à MongoDB :", err));
-
-
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const blogController = require('./controllers/blogController');
-const userController = require('./controllers/userController');
-
 app.use(cors(corsOptions));
-
-app.use('/blog', blogController);
-app.use('/user', userController);
-
-app.listen(port, () => {
-    console.log(`Serveur démarré sur http://localhost:${port}`);
-});
-
-
-// Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,9 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // Routes
-const userController = require('./controllers/userController'); // Utiliser uniquement userController
+const userController = require('./controllers/userController');
+const blogController = require('./controllers/blogController');
 
-app.use('/user', userController); // Utiliser le contrôleur utilisateur uniquement
+app.use('/user', userController);
+app.use('/blog', blogController);
 
 // Démarrer le serveur
 app.listen(port, () => {
