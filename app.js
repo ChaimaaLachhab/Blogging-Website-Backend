@@ -1,41 +1,31 @@
+require('dotenv').config(); // Charger les variables d’environnement
 const express = require('express');
-const app = express();
-const port = 5000;
-const Router = express.Router();
 const cors = require('cors');
+const connectDB = require('./database'); // Importer la fonction de connexion
 
+const app = express();
+const port = process.env.PORT || 5000;
 
-// Autoriser les requêtes depuis http://localhost:3000
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
-
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Connexion à MongoDB via database.js
+connectDB();
 
-const blogController = require('./controllers/blogController');
-const userController = require('./controllers/userController');
-app.use('/blog', blogController);
-app.use('/user', userController);
-app.get('/data', (req, res) => {
-    res.send([
-        {
-            "name": "John Doe",
-            "age": 30,
-            "city": "New York"
-        },
-        {
-            "name": "Jane Doe",
-            "age": 25,
-            "city": "Los Angeles"
-        }
-    ])
-})
+// Routes
+const userController = require('./controllers/userController'); // Utiliser uniquement userController
+
+app.use('/user', userController); // Utiliser le contrôleur utilisateur uniquement
+
+// Démarrer le serveur
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`🚀 Serveur démarré sur http://localhost:${port}`);
+});
+
+// Gestion des erreurs globales
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Une erreur s'est produite", error: err.message });
+});
