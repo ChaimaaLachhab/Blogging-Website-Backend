@@ -9,9 +9,9 @@ const createSampleData = async () => {
 
         // 1. Créer un utilisateur
         const newUser = new User({
-            username: "chaimaa",
-            email: "chaimaa@example.com",
-            password: "securepassword"
+            username: "user",
+            email: "user@gmail.com",
+            password: "1234"
         });
 
         await newUser.save();
