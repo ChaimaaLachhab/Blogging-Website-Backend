@@ -1,10 +1,40 @@
 require('dotenv').config(); // Charger les variables d’environnement
 const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const port = process.env.PORT || 5001
+;
 const cors = require('cors');
 const connectDB = require('./database'); // Importer la fonction de connexion
 
-const app = express();
-const port = process.env.PORT || 5000;
+// Middleware
+app.use(bodyParser.json());
+
+// Connexion à MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log("Connexion à MongoDB réussie"))
+.catch(err => console.error("Erreur de connexion à MongoDB :", err));
+
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const blogController = require('./controllers/blogController');
+const userController = require('./controllers/userController');
+
+app.use(cors(corsOptions));
+
+app.use('/blog', blogController);
+app.use('/user', userController);
+
+app.listen(port, () => {
+    console.log(`Serveur démarré sur http://localhost:${port}`);
+});
+
 
 // Middleware
 app.use(cors());

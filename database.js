@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 // Utilisez directement l'URL de connexion complète
