@@ -1,16 +1,22 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
 
-const MONGO_URL = process.env.MONGO_URL;
+let cachedDb = null;
 
 const connectDB = async () => {
-    try {
-        await mongoose.connect(MONGO_URL);
-        console.log("✅ Connecté à MongoDB Atlas");
-    } catch (err) {
-        console.error("❌ Erreur de connexion à MongoDB :", err);
-        process.exit(1);
-    }
+  if (cachedDb) return cachedDb;
+
+  try {
+    const client = await mongoose.connect(process.env.MONGO_URL, {
+      serverSelectionTimeoutMS: 5000
+    });
+
+    cachedDb = client;
+    console.log("✅ MongoDB Connecté");
+    return client;
+  } catch (err) {
+    console.error("❌ Erreur MongoDB :", err.message);
+    throw new Error("Échec de la connexion DB");
+  }
 };
 
-module.exports = connectDB; // Utilisation de `module.exports` pour CommonJS
+module.exports = connectDB;
