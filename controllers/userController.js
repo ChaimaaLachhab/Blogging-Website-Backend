@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Assure-toi que le modèle User existe
+const User = require('../models/User');
 
-const JWT_SECRET = 'ton_secret_key'; // Change ça et utilise une variable d'environnement
+const JWT_SECRET = 'ton_secret_key';
 
 // Route GET pour tester l'API
 router.get('/', (req, res) => {
@@ -49,6 +49,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: "Identifiants invalides" });
         }
 
+        console.log("Username en BD :", user.username);
         console.log("Mot de passe en BD :", user.password); // Vérifier le hash du mot de passe
 
         // Vérifier le mot de passe
@@ -58,7 +59,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Générer un token JWT
-        const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user._id, username: user.username, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
 
         res.json({ message: "Connexion réussie", token });
     } catch (error) {
