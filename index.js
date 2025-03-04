@@ -1,16 +1,16 @@
-require('dotenv').config(); // Charger les variables d’environnement
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./database'); // Importer la fonction de connexion
+const connectDB = require('./database'); // Importation en mode CommonJS
 
 const app = express();
-const port = 5001;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connexion à MongoDB via database.js
+// Connexion à MongoDB
 connectDB();
 
 // Routes
@@ -21,8 +21,8 @@ app.use('/user', userController);
 app.use('/blog', blogController);
 
 // Démarrer le serveur
-app.listen(port, () => {
-    console.log(`🚀 Serveur démarré sur http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
 });
 
 // Gestion des erreurs globales
