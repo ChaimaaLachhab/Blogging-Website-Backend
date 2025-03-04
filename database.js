@@ -1,13 +1,11 @@
-
+require('dotenv').config();
 const mongoose = require('mongoose');
 
-// Utilisez directement l'URL de connexion complète
-const MONGO_URI = "mongodb+srv://chaimaalachhab:1234@db.ugxsm.mongodb.net/?retryWrites=true&w=majority&appName=db";
+const DATABASE_URL = process.env.DATABASE_URL;
 
 const connectDB = async () => {
     try {
-        // Suppression des options dépréciées
-        await mongoose.connect(MONGO_URI);
+        await mongoose.connect(DATABASE_URL);
         console.log("✅ Connecté à MongoDB Atlas");
     } catch (err) {
         console.error("❌ Erreur de connexion à MongoDB :", err);
@@ -15,4 +13,4 @@ const connectDB = async () => {
     }
 };
 
-module.exports = connectDB;
+module.exports = connectDB; // Utilisation de `module.exports` pour CommonJS
