@@ -38,11 +38,19 @@ router.post('/add', async (req, res) => {
   }
 });
 
-
+app.get('/blog/get-all', async (req, res) => {
+  try {
+    const blogs = await Blog.find();
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des blogs', error: error.message });
+  }
+});
 
 
 // Récupérer tous les blogs
-router.get('/get-all', async (req, res) => {
+router.get('/get-all-by-user', async (req, res) => {
   try {
       const blogs = await Blog.find().populate('author', 'name');  // Assurez-vous de récupérer le nom de l'auteur
       res.json(blogs);
