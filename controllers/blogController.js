@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router(); // Utilisation du router, pas d'instance app ici
 const Blog = require('../models/Blog');
 const CategoryEnum = require('../models/categoryEnum');
+const mongoose = require('mongoose'); // Ajoutez cette ligne
 
 // Ajouter un blog
 router.post('/add', async (req, res) => {
@@ -27,19 +28,17 @@ router.post('/add', async (req, res) => {
 // Récupérer tous les blogs
 router.get('/get-all', async (req, res) => {
   try {
-    // Vérifie l'état de la connexion
+    // Vérifie si la connexion est active
     if (mongoose.connection.readyState !== 1) {
-      await connectDB();
+      await require('../database')(); // Reconnecte si nécessaire
     }
     
-    const blogs = await Blog.find().maxTimeMS(15000); // Timeout de 15s
+    const blogs = await Blog.find().maxTimeMS(20000); // Timeout augmenté
     res.status(200).json(blogs);
   } catch (error) {
-    console.error("Erreur complète :", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Erreur lors de la récupération des blogs',
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      error: error.message
     });
   }
 });
