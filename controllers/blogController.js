@@ -27,10 +27,20 @@ router.post('/add', async (req, res) => {
 // Récupérer tous les blogs
 router.get('/get-all', async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    // Vérifie l'état de la connexion
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    
+    const blogs = await Blog.find().maxTimeMS(15000); // Timeout de 15s
     res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des blogs', error: error.message });
+    console.error("Erreur complète :", error);
+    res.status(500).json({ 
+      message: 'Erreur lors de la récupération des blogs',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
