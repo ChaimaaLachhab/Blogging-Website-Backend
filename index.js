@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./database'); // Importation en mode CommonJS
-
+const connectDB = require('./database');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -17,6 +16,7 @@ connectDB();
 const userController = require('./controllers/userController');
 const blogController = require('./controllers/blogController');
 
+// Utiliser les routes définies dans les contrôleurs
 app.use('/user', userController);
 app.use('/blog', blogController);
 
